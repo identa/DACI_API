@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/employee")
@@ -20,8 +17,8 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<EmployeeModel>> getAllEmployee() {
-        return new ResponseEntity<>(listEmployeeModel(), HttpStatus.OK);
+    public ResponseEntity<ServiceResult> getAllEmployee(@RequestBody CustomerGetRequest request) {
+        return new ResponseEntity<>(employeeService.getAllCustomer(request), HttpStatus.OK);
     }
 
     private EmployeeModel employeeModel(EmployeeEntity employeeEntity) {
@@ -36,17 +33,9 @@ public class EmployeeController {
         return model;
     }
 
-    private List<EmployeeModel> listEmployeeModel() {
-        List<EmployeeModel> employeeModelList = new ArrayList<>();
-        for (EmployeeEntity employeeEntity : employeeService.getAllEmployee()) {
-            employeeModelList.add(employeeModel(employeeEntity));
-        }
-        return employeeModelList;
-    }
-
     @PostMapping("/signin")
-    public ResponseEntity<EmployeeModel> login(@RequestBody EmployeeLoginModel loginModel) {
-        return new ResponseEntity<EmployeeModel>(employeeModel(employeeService.getLogin(loginModel.getEmail()
+    public ResponseEntity<EmployeeModel> login(@RequestBody EmployeeLoginRequest request) {
+        return new ResponseEntity<>(employeeModel(employeeService.getLogin(loginModel.getEmail()
                 , loginModel.getPassword()))
                 , HttpStatus.OK);
     }

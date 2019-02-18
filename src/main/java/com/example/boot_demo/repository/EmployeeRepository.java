@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Integer> {
     EmployeeEntity findByEmailAndPassword(String email, String password);
+    List<EmployeeEntity> findByDeletedAndRoleId(boolean deleted, int id);
 }

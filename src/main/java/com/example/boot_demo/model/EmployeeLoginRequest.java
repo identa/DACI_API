@@ -1,14 +1,14 @@
 package com.example.boot_demo.model;
 
-public class EmployeeLoginModel {
+public class EmployeeLoginRequest {
     private String email;
 
     private String password;
 
-    public EmployeeLoginModel() {
+    public EmployeeLoginRequest() {
     }
 
-    public EmployeeLoginModel(String email, String password) {
+    public EmployeeLoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }

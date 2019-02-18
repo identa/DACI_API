@@ -33,9 +33,44 @@ public class EmployeeService {
     @Autowired
     OrderDetailRepository orderDetailRepository;
 
-    public List<EmployeeEntity> getAllEmployee() {
-        return employeeRepository.findAll();
+    //--------------------------get all customer ------------------------------
+    private CustomerGetResponse createCustomerGetResponse(EmployeeEntity entity) {
+        CustomerGetResponse response = new CustomerGetResponse(entity.getId(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getEmail(),
+                entity.getStatus());
+        return response;
     }
+
+    private List<CustomerGetResponse> createCustomerGetResponseList(boolean deleted, int roleID) {
+        List<EmployeeEntity> customerList = employeeRepository.findByDeletedAndRoleId(deleted, roleID);
+        List<CustomerGetResponse> responseList = new ArrayList<>();
+        for (EmployeeEntity entity : customerList) {
+            responseList.add(createCustomerGetResponse(entity));
+        }
+        return responseList;
+    }
+
+    public ServiceResult getAllCustomer(CustomerGetRequest request) {
+        ServiceResult result = new ServiceResult();
+        List<CustomerGetResponse> employeeEntityList = createCustomerGetResponseList(request.isDeleted(), request.getRoleID());
+        if (employeeEntityList != null) {
+            result.setMessage("Get all customers successfully");
+            result.setData(employeeEntityList);
+        } else {
+            result.setMessage("Get all customers failed");
+            result.setStatus(ServiceResult.Status.FAILED);
+        }
+        return result;
+    }
+
+    //--------------------------------------------------------------
+
+    //---------------------get customer order -------------------------
+
+    public
+    //-----------------------------------------------------------------
 
     private EmployeeModel employeeModel(EmployeeEntity employeeEntity) {
         EmployeeModel model = new EmployeeModel(employeeEntity.getId(),
@@ -194,7 +229,7 @@ public class EmployeeService {
         } else return null;
     }
 
-    public ServiceResult deleteOrder(OrderDeleteRequest request){
+    public ServiceResult deleteOrder(OrderDeleteRequest request) {
         ServiceResult result = new ServiceResult();
         int index = isOrderDeleted(request.getId(), request.isDeleted());
 
@@ -220,7 +255,7 @@ public class EmployeeService {
         return 2;
     }
 
-    public ServiceResult deleteProduct(ProductDeleteRequest request){
+    public ServiceResult deleteProduct(ProductDeleteRequest request) {
         ServiceResult result = new ServiceResult();
         int index = isProductDeleted(request.getId(), request.isDeleted());
 
