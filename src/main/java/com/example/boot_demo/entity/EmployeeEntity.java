@@ -1,8 +1,16 @@
 package com.example.boot_demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(value = {"authorities" })
 @Entity
 @Table(name = "employee")
 public class EmployeeEntity {
@@ -23,7 +31,7 @@ public class EmployeeEntity {
 
     private boolean deleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "roleID")
     private RoleEntity role;
 
@@ -41,6 +49,13 @@ public class EmployeeEntity {
         this.status = status;
         this.deleted = deleted;
         this.role = role;
+    }
+
+    public List<GrantedAuthority> getEmployeeAuthorities(){
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+
+        return authorities;
     }
 
     public int getId() {

@@ -34,10 +34,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<EmployeeModel> login(@RequestBody EmployeeLoginRequest request) {
-        return new ResponseEntity<>(employeeModel(employeeService.getLogin(loginModel.getEmail()
-                , loginModel.getPassword()))
-                , HttpStatus.OK);
+    public ResponseEntity<ServiceResult> login(@RequestBody EmployeeSignInRequest request) {
+        return new ResponseEntity<>(employeeService.signInEmployee(request), HttpStatus.OK);
     }
 
     @PostMapping("/signup")

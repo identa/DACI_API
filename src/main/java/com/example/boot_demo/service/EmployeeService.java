@@ -33,6 +33,9 @@ public class EmployeeService {
     @Autowired
     OrderDetailRepository orderDetailRepository;
 
+    @Autowired
+    JwtService jwtService;
+
     //--------------------------get all customer ------------------------------
     private CustomerGetResponse createCustomerGetResponse(EmployeeEntity entity) {
         CustomerGetResponse response = new CustomerGetResponse(entity.getId(),
@@ -69,7 +72,7 @@ public class EmployeeService {
 
     //---------------------get customer order -------------------------
 
-    public
+//    public
     //-----------------------------------------------------------------
 
     private EmployeeModel employeeModel(EmployeeEntity employeeEntity) {
@@ -114,8 +117,21 @@ public class EmployeeService {
     }
 
 
-    public EmployeeEntity getLogin(String email, String password) {
-        return employeeRepository.findByEmailAndPassword(email, password);
+//    public EmployeeEntity getLogin(String email, String password) {
+//        return employeeRepository.findByEmailAndPassword(email, password);
+//    }
+
+    public ServiceResult signInEmployee(EmployeeSignInRequest request){
+        ServiceResult result = new ServiceResult();
+        EmployeeEntity employee = employeeRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
+        if (employee != null){
+            result.setMessage("Sign in successfully");
+            result.setData(jwtService.generateTokenLogin(request.getEmail()));
+        }else {
+            result.setStatus(ServiceResult.Status.FAILED);
+            result.setMessage("Email or password is incorrect");
+        }
+        return result;
     }
 
     public EmployeeEntity getSignUp(EmployeeSignUpModel signUpModel) {
@@ -134,7 +150,7 @@ public class EmployeeService {
         EmployeeEntity entity = employeeRepository.findById(id).orElse(null);
         if (entity != null) {
             employeeRepository.delete(entity);
-            result.setMessage("Delete sucessfully!");
+            result.setMessage("Delete successfully!");
         } else {
             result.setMessage("Delete failed");
             result.setStatus(ServiceResult.Status.FAILED);
